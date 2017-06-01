@@ -33,7 +33,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 import os
 import numpy as np
 import matplotlib as mpl
-mpl.rcParams['backend'] = 'TkAgg'
+# mpl.rcParams['backend'] = 'TkAgg'
 import matplotlib.pyplot as plt
 plt.rcdefaults()
 from matplotlib.patches import Rectangle
@@ -90,6 +90,11 @@ def add_mapping(patches, lines, colors, start_ratio, patch_size, ind_bgn,
                   (end_loc[0], end_loc[1])])
 
 
+def add_mapping_2(lines, start, end):
+    for start_loc, end_loc in zip(start, end):
+        lines.append([start_loc, end_loc])
+
+
 def label(xy, text, xy_off=[0, 4]):
     plt.text(xy[0] + xy_off[0], xy[1] + xy_off[1], text,
              family='sans-serif', size=8)
@@ -102,6 +107,7 @@ if __name__ == '__main__':
 
     patches = []
     lines = []
+    lines_bg = []
     colors = []
 
     fig, ax = plt.subplots()
@@ -118,6 +124,10 @@ if __name__ == '__main__':
     num_show_list = list(map(min, num_list, [NumConvMax] * len(num_list)))
     top_left_list = np.c_[np.cumsum(x_diff_list), np.zeros(len(x_diff_list))]
 
+    bg_line_start = []
+    bg_line_end = []
+    bg_line_start.append(top_left_list[-1])
+
     for ind in range(len(size_list)):
         add_layer(patches, colors, size=size_list[ind],
                   num=num_show_list[ind],
@@ -125,6 +135,7 @@ if __name__ == '__main__':
         label(top_left_list[ind], text_list[ind] + '\n{}@{}x{}'.format(
             num_list[ind], size_list[ind], size_list[ind]))
 
+    bg_line_start.append(patches[-1].get_xy())
 
     ############################
     # in between layers
@@ -151,19 +162,39 @@ if __name__ == '__main__':
     loc_diff_list = [[fc_unit_size, -fc_unit_size]] * len(top_left_list)
     text_list = ['Hidden\nunits'] * (len(size_list) - 1) + ['Outputs']
 
+    bg_line_end.append(top_left_list[0])
+
     for ind in range(len(size_list)):
+        if ind > 0:
+            tx, ty = patches[-1].get_xy()
+            h, w = patches[-1].get_height(), patches[-1].get_width()
+            bg_line_start.append((tx + w, ty))
+            # my_top_left_start.append(patches[-1].get_xy())
         add_layer(patches, colors, size=size_list[ind], num=num_show_list[ind],
                   top_left=top_left_list[ind], loc_diff=loc_diff_list[ind])
         label(top_left_list[ind], text_list[ind] + '\n{}'.format(
             num_list[ind]))
 
+        tx, ty = patches[-1].get_xy()
+        h, w = patches[-1].get_height(), patches[-1].get_width()
+        bg_line_end.append((tx + w, ty))
     text_list = ['Flatten\n', 'Fully\nconnected', 'Fully\nconnected']
+
+    bg_line_start.append(top_left_list[0])
+    bg_line_end.append(top_left_list[1])
+    bg_line_start.append(top_left_list[1])
+    bg_line_end.append(top_left_list[2])
+
+    add_mapping_2(lines_bg, bg_line_start, bg_line_end)
 
     for ind in range(len(size_list)):
         label(top_left_list[ind], text_list[ind], xy_off=[-10, -65])
 
     ############################
     colors += [0, 1]
+    linebg_collection = LineCollection(lines_bg, colors='k', linewidths=0.5,
+                                       zorder=1)
+    ax.add_collection(linebg_collection)
     collection = PatchCollection(patches, cmap=my_cmap)
     collection.set_array(np.array(colors))
     ax.add_collection(collection)
@@ -176,6 +207,6 @@ if __name__ == '__main__':
     fig.set_size_inches(8, 2.5)
 
     fig_dir = './'
-    fig_ext = '.png'
+    fig_ext = '.svg'
     fig.savefig(os.path.join(fig_dir, 'convnet_fig1' + fig_ext),
                 bbox_inches='tight', pad_inches=0)
