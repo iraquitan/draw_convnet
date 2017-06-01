@@ -32,12 +32,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 
 import os
 import numpy as np
+import matplotlib as mpl
+mpl.rcParams['backend'] = 'TkAgg'
 import matplotlib.pyplot as plt
 plt.rcdefaults()
-from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
-
+from matplotlib.collections import PatchCollection, LineCollection
 
 NumConvMax = 8
 NumFcMax = 20
@@ -46,12 +46,11 @@ Light = 0.7
 Medium = 0.5
 Dark = 0.3
 Black = 0.
+my_cmap = plt.cm.ocean
 
 
-def add_layer(patches, colors, size=24, num=5,
-              top_left=[0, 0],
-              loc_diff=[3, -3],
-              ):
+def add_layer(patches, colors, size=24, num=5, top_left=[0, 0],
+              loc_diff=[3, -3]):
     # add a rectangle
     top_left = np.array(top_left)
     loc_diff = np.array(loc_diff)
@@ -64,7 +63,7 @@ def add_layer(patches, colors, size=24, num=5,
             colors.append(Light)
 
 
-def add_mapping(patches, colors, start_ratio, patch_size, ind_bgn,
+def add_mapping(patches, lines, colors, start_ratio, patch_size, ind_bgn,
                 top_left_list, loc_diff_list, num_show_list, size_list):
 
     start_loc = top_left_list[ind_bgn] \
@@ -82,18 +81,13 @@ def add_mapping(patches, colors, start_ratio, patch_size, ind_bgn,
 
     patches.append(Rectangle(start_loc, patch_size, patch_size))
     colors.append(Dark)
-    patches.append(Line2D([start_loc[0], end_loc[0]],
-                          [start_loc[1], end_loc[1]]))
-    colors.append(Black)
-    patches.append(Line2D([start_loc[0] + patch_size, end_loc[0]],
-                          [start_loc[1], end_loc[1]]))
-    colors.append(Black)
-    patches.append(Line2D([start_loc[0], end_loc[0]],
-                          [start_loc[1] + patch_size, end_loc[1]]))
-    colors.append(Black)
-    patches.append(Line2D([start_loc[0] + patch_size, end_loc[0]],
-                          [start_loc[1] + patch_size, end_loc[1]]))
-    colors.append(Black)
+    lines.append([start_loc, end_loc])
+    lines.append([(start_loc[0] + patch_size, start_loc[1]),
+                  (end_loc[0], end_loc[1])])
+    lines.append([(start_loc[0], start_loc[1] + patch_size),
+                  (end_loc[0], end_loc[1])])
+    lines.append([(start_loc[0] + patch_size, start_loc[1] + patch_size),
+                  (end_loc[0], end_loc[1])])
 
 
 def label(xy, text, xy_off=[0, 4]):
@@ -107,6 +101,7 @@ if __name__ == '__main__':
     layer_width = 40
 
     patches = []
+    lines = []
     colors = []
 
     fig, ax = plt.subplots()
@@ -139,7 +134,7 @@ if __name__ == '__main__':
     text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling']
 
     for ind in range(len(patch_size_list)):
-        add_mapping(patches, colors, start_ratio_list[ind],
+        add_mapping(patches, lines, colors, start_ratio_list[ind],
                     patch_size_list[ind], ind,
                     top_left_list, loc_diff_list, num_show_list, size_list)
         label(top_left_list[ind], text_list[ind] + '\n{}x{} kernel'.format(
@@ -169,9 +164,11 @@ if __name__ == '__main__':
 
     ############################
     colors += [0, 1]
-    collection = PatchCollection(patches, cmap=plt.cm.gray)
+    collection = PatchCollection(patches, cmap=my_cmap)
     collection.set_array(np.array(colors))
     ax.add_collection(collection)
+    line_collection = LineCollection(lines, colors='k', linewidths=0.5)
+    ax.add_collection(line_collection)
     plt.tight_layout()
     plt.axis('equal')
     plt.axis('off')
@@ -180,5 +177,5 @@ if __name__ == '__main__':
 
     fig_dir = './'
     fig_ext = '.png'
-    fig.savefig(os.path.join(fig_dir, 'convnet_fig' + fig_ext),
+    fig.savefig(os.path.join(fig_dir, 'convnet_fig1' + fig_ext),
                 bbox_inches='tight', pad_inches=0)
