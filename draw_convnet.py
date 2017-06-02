@@ -33,11 +33,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 import os
 import numpy as np
 import matplotlib as mpl
-try:
-    import matplotlib.pyplot as plt
-except RuntimeError as e:
-    mpl.rcParams['backend'] = 'TkAgg'
-    import matplotlib.pyplot as plt
+mpl.rcParams['backend'] = 'TkAgg'
+import matplotlib.pyplot as plt
+# try:
+#     import matplotlib.pyplot as plt
+# except RuntimeError as e:
+#     mpl.rcParams['backend'] = 'TkAgg'
+#     import matplotlib.pyplot as plt
 plt.rcdefaults()
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection, LineCollection
