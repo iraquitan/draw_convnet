@@ -48,14 +48,14 @@ class BaseNet(object):
         ]
         return [item for sublist in patches for item in sublist]
 
-
     @property
     def colors(self):
-        return [
+        colors = [
             i.colors for l in [self._conv_layers, self._mappings,
                                self._fc_layers]
             for i in l
         ]
+        return [item for sublist in colors for item in sublist]
 
     @property
     def lines(self):
