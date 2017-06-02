@@ -29,3 +29,8 @@ def add_mapping(patches, lines, colors, start_ratio, patch_size, ind_bgn,
                   (end_loc[0], end_loc[1])])
     lines.append([(start_loc[0] + patch_size, start_loc[1] + patch_size),
                   (end_loc[0], end_loc[1])])
+
+
+def add_mapping2(lines, start, end):
+    for start_loc, end_loc in zip(start, end):
+        lines.append([start_loc, end_loc])
