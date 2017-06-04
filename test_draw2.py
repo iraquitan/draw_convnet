@@ -20,4 +20,5 @@ bn.add_conv_mapping('Max-pooling', 1, 2, 2, [0.4, 0.8])
 bn.add_conv_mapping('Convolution', 2, 3, 5, [0.4, 0.5])
 bn.add_conv_mapping('Max-pooling', 3, 4, 2, [0.4, 0.8])
 
-bn.draw(True)
+bn.draw(False)
+bn.save_plot()
