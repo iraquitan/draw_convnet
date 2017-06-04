@@ -5,11 +5,15 @@ from .color import *
 
 
 class Layer(object):
+    TYPES = ['conv', 'fc']
 
-    def __init__(self, name, size=24, n=5, top_left=(0, 0), loc_diff=(3, -3),
-                 n_show=5):
+    def __init__(self, name, type='conv', size=24, n=5, top_left=(0, 0),
+                 loc_diff=(3, -3), n_show=5):
         """"""
         self.name = name
+        if type not in self.TYPES:
+            raise ValueError("'type' must be one of {}".format(self.TYPES))
+        self.type = type
         self.size = size
         self.n = n
         self.top_left = top_left
@@ -22,8 +26,12 @@ class Layer(object):
 
     @property
     def label(self):
-        return (self.top_left, self.name + '\n{}@{}x{}'.format(
-            self.n, self.size, self.size), [0, 4])
+        if self.type == 'conv':
+            return (self.top_left, self.name + '\n{}@{}x{}'.format(
+                self.n, self.size, self.size), [0, 4])
+        else:
+            return (self.top_left, self.name + '\n{}'.format(self.n),
+                    [0, 4])
 
     @label.setter
     def label(self, value):
