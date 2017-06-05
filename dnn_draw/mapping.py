@@ -90,6 +90,13 @@ class MapFC(object):
         te_h = self.to_.patches[0].get_height()
         top_end_loc = (te_x, te_y + te_h)
 
+        ts_x, ts_y = self.from_.patches[0].get_xy()
+        ts_h = self.from_.patches[0].get_height()
+        top_start_loc2 = (ts_x, ts_y + ts_h)
+        te_x, te_y = self.to_.patches[-1].get_xy()
+        te_h = self.to_.patches[-1].get_height()
+        top_end_loc2 = (te_x, te_y + te_h)
+
         bs_x, bs_y = self.from_.patches[-1].get_xy()
         bs_w = self.from_.patches[-1].get_width()
         bottom_start_loc = (bs_x + bs_w, bs_y)
@@ -97,5 +104,14 @@ class MapFC(object):
         be_w = self.to_.patches[-1].get_width()
         bottom_end_loc = (be_x + be_w, be_y) if last else (be_x, be_y)
 
+        bs_x, bs_y = self.from_.patches[-1].get_xy()
+        bs_w = self.from_.patches[-1].get_width()
+        bottom_start_loc2 = (bs_x + bs_w, bs_y)
+        be_x, be_y = self.to_.patches[0].get_xy()
+        be_w = self.to_.patches[0].get_width()
+        bottom_end_loc2 = (be_x + be_w, be_y) if last else (be_x, be_y)
+
         self._lines.append((top_start_loc, top_end_loc))
+        self._lines.append((top_start_loc2, top_end_loc2))
         self._lines.append((bottom_start_loc, bottom_end_loc))
+        self._lines.append((bottom_start_loc2, bottom_end_loc2))
