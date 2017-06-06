@@ -83,33 +83,43 @@ class MapFC(object):
         return self._lines
 
     def add(self, last=False):
+        # for i in range(self.from_.n_show):
+        #     for j in range(self.to_.n_show):
+        #         ts_x, ts_y = self.from_.patches[i].get_xy()
+        #         ts_h = self.from_.patches[i].get_height()
+        #         top_start_loc = (ts_x + ts_h/2, ts_y + ts_h/2)
+        #         te_x, te_y = self.to_.patches[j].get_xy()
+        #         te_h = self.to_.patches[j].get_height()
+        #         top_end_loc = (te_x + te_h/2, te_y + te_h/2)
+        #         self._lines.append((top_start_loc, top_end_loc))
+
         ts_x, ts_y = self.from_.patches[0].get_xy()
         ts_h = self.from_.patches[0].get_height()
-        top_start_loc = (ts_x, ts_y + ts_h)
+        top_start_loc = (ts_x + ts_h/2, ts_y + ts_h/2)
         te_x, te_y = self.to_.patches[0].get_xy()
         te_h = self.to_.patches[0].get_height()
-        top_end_loc = (te_x, te_y + te_h)
+        top_end_loc = (te_x + te_h/2, te_y + te_h/2)
 
         ts_x, ts_y = self.from_.patches[0].get_xy()
         ts_h = self.from_.patches[0].get_height()
-        top_start_loc2 = (ts_x, ts_y + ts_h)
+        top_start_loc2 = (ts_x + ts_h / 2, ts_y + ts_h / 2)
         te_x, te_y = self.to_.patches[-1].get_xy()
         te_h = self.to_.patches[-1].get_height()
-        top_end_loc2 = (te_x, te_y + te_h)
+        top_end_loc2 = (te_x + te_h / 2, te_y + te_h / 2)
 
         bs_x, bs_y = self.from_.patches[-1].get_xy()
         bs_w = self.from_.patches[-1].get_width()
-        bottom_start_loc = (bs_x + bs_w, bs_y)
+        bottom_start_loc = (bs_x + bs_w/2, bs_y + bs_w/2)
         be_x, be_y = self.to_.patches[-1].get_xy()
         be_w = self.to_.patches[-1].get_width()
-        bottom_end_loc = (be_x + be_w, be_y) if last else (be_x, be_y)
+        bottom_end_loc = (be_x + be_w/2, be_y + be_w/2)
 
         bs_x, bs_y = self.from_.patches[-1].get_xy()
         bs_w = self.from_.patches[-1].get_width()
-        bottom_start_loc2 = (bs_x + bs_w, bs_y)
+        bottom_start_loc2 = (bs_x + bs_w/2, bs_y + bs_w/2)
         be_x, be_y = self.to_.patches[0].get_xy()
         be_w = self.to_.patches[0].get_width()
-        bottom_end_loc2 = (be_x + be_w, be_y) if last else (be_x, be_y)
+        bottom_end_loc2 = (be_x + be_w/2, be_y + be_w/2)
 
         self._lines.append((top_start_loc, top_end_loc))
         self._lines.append((top_start_loc2, top_end_loc2))

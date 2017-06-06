@@ -10,9 +10,9 @@ bn.add_conv_layer('Convolution', 32, 5, padding='valid',
                   start_ratio=[0.4, 0.5])
 # bn.add_conv_layer('Max-pooling', 32, 2, start_ratio=[0.4, 0.8])
 bn.add_conv_layer('Convolution', 32, 5, padding='valid',
-                  start_ratio=[0.4, 0.5])
+                  start_ratio=[0.4, 0.8])
 bn.add_conv_layer('Max-pooling', 32, 2, type='pool', padding='valid',
-                  stride=2, start_ratio=[0.4, 0.8])
+                  stride=2, start_ratio=[0.4, 0.5])
 
 # Fully connected layers
 bn.add_fc_layer(128)
